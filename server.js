@@ -1,12 +1,13 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const fetch = require('node-fetch'); // 🔥 FALTABA ESTO
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-const API_KEY = "AIzaSyCkSlY_hrOyefTrGcFA0_yopzKxSBLBchs"; // 👈 pega tu API aquí
+const API_KEY = process.env.GEMINI_API_KEY;
 
 app.post('/chat', async (req, res) => {
   const userMessage = req.body.message;
@@ -42,10 +43,13 @@ Responde claro, corto y directo.
     res.json({ reply });
 
   } catch (error) {
+    console.error(error); // 👈 para ver errores en Render
     res.json({ reply: "Error en el servidor 😢" });
   }
 });
 
-app.listen(3000, () => {
-  console.log("🔥 Servidor corriendo en http://localhost:3000");
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log("Servidor corriendo");
 });
