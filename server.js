@@ -20,7 +20,7 @@ Responde claro, corto y directo.
 `;
 
   try {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`, {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -38,7 +38,14 @@ Responde claro, corto y directo.
 
     const data = await response.json();
 
-    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "No entendí 😅";
+let reply = "No entendí 😅";
+
+if (data.candidates && data.candidates.length > 0) {
+  reply = data.candidates[0].content.parts[0].text;
+} else if (data.error) {
+  reply = "Error de API 😢";
+  console.error(data.error);
+}
 
     res.json({ reply });
 
