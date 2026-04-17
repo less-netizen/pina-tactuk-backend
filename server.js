@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const fetch = require('node-fetch'); // 🔥 FALTABA ESTO
+const fetch = require('node-fetch');
 
 const app = express();
 app.use(cors());
@@ -11,6 +11,7 @@ const API_KEY = process.env.GEMINI_API_KEY;
 
 app.post('/chat', async (req, res) => {
   const userMessage = req.body.message;
+
   console.log("API KEY:", API_KEY);
 
   const contexto = `
@@ -27,9 +28,10 @@ Responde claro, corto y directo.
       body: JSON.stringify({
         contents: [
           {
+            role: "user",
             parts: [
               {
-                text: contexto + "\\nUsuario: " + userMessage
+                text: contexto + "\nUsuario: " + userMessage
               }
             ]
           }
@@ -37,22 +39,24 @@ Responde claro, corto y directo.
       })
     });
 
+    console.log("STATUS:", response.status);
+
     const data = await response.json();
     console.log("RESPUESTA GEMINI:", data);
 
-let reply = "No entendí 😅";
+    let reply = "No entendí 😅";
 
-if (data.candidates && data.candidates.length > 0) {
-  reply = data.candidates[0].content.parts[0].text;
-} else if (data.error) {
-  reply = "Error de API 😢";
-  console.error(data.error);
-}
+    if (data.candidates && data.candidates.length > 0) {
+      reply = data.candidates[0].content.parts[0].text;
+    } else if (data.error) {
+      reply = "Error de API 😢";
+      console.error(data.error);
+    }
 
     res.json({ reply });
 
   } catch (error) {
-    console.error(error); // 👈 para ver errores en Render
+    console.error("ERROR GENERAL:", error);
     res.json({ reply: "Error en el servidor 😢" });
   }
 });
