@@ -1,7 +1,17 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const fetch = require('node-fetch');
+const response = await fetch("https://api.openai.com/v1/chat/completions", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
+  },
+  body: JSON.stringify({
+    model: "gpt-4o-mini",
+    messages: [{ role: "user", content: userMessage }]
+  })
+});
 
 const app = express();
 app.use(cors());
@@ -65,8 +75,11 @@ Responde de forma clara, directa y amigable.
   }
 });
 
-const PORT = process.env.PORT || 3000;
+app.get("/", (req, res) => {
+  res.send("Servidor funcionando 🚀");
+});
 
 app.listen(PORT, () => {
   console.log("Servidor corriendo");
 });
+
