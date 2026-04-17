@@ -1,21 +1,12 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const response = await fetch("https://api.openai.com/v1/chat/completions", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
-  },
-  body: JSON.stringify({
-    model: "gpt-4o-mini",
-    messages: [{ role: "user", content: userMessage }]
-  })
-});
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+
+const PORT = process.env.PORT || 3000;
 
 const API_KEY = process.env.GEMINI_API_KEY;
 
@@ -51,16 +42,10 @@ Responde de forma clara, directa y amigable.
 
     const data = await response.json();
 
-    // 👇 RESPUESTA SEGURA
     let reply = "⚠️ La IA no respondió correctamente";
 
     if (
-      data &&
-      data.candidates &&
-      data.candidates[0] &&
-      data.candidates[0].content &&
-      data.candidates[0].content.parts &&
-      data.candidates[0].content.parts[0]
+      data?.candidates?.[0]?.content?.parts?.[0]?.text
     ) {
       reply = data.candidates[0].content.parts[0].text;
     } else {
@@ -80,6 +65,7 @@ app.get("/", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log("Servidor corriendo");
+  console.log("Servidor corriendo en puerto " + PORT);
 });
+
 
