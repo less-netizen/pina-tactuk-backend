@@ -11,6 +11,7 @@ const API_KEY = process.env.GEMINI_API_KEY;
 
 app.post('/chat', async (req, res) => {
   const userMessage = req.body.message;
+  console.log("API KEY:", API_KEY);
 
   const contexto = `
 Eres Piña Tactuk 🍍, asistente virtual de una academia militar.
@@ -37,6 +38,7 @@ Responde claro, corto y directo.
     });
 
     const data = await response.json();
+    console.log("RESPUESTA GEMINI:", data);
 
 let reply = "No entendí 😅";
 
